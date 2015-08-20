@@ -2,5 +2,7 @@
     'use strict';
 
     angular.module('app.common', [])
-        .constant('searchAPI', 'http://ainq.com');
+        .constant('API', 'http://localhost:8080/chpl-service')
+        .constant('RealAPI', '/rest')
+        .constant('devAPI', 'http://ainq.com');
 })();

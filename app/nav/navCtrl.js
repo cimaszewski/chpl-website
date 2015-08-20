@@ -9,37 +9,31 @@
                 return route === $location.path();
             };
 
-            $scope.isActive = self.isActive;
-
-            function handleRequest (res) {
-                var token = res.data ? res.data.token : null;
-                if (token) {
-                    $log.info('JWT:', token);
+            self.handleLogin = function (res) {
+                if (res.status === 200) {
+                    var token = res.data.token ? res.data : null;
+                    if (token) {
+                        self.message = '';
+                        $location.path('/admin');
+                    } else {
+                        self.message = 'Invalid username or password';
+                    }
+                } else {
+                    self.message = 'Invalid username or password';
                 }
-                self.message = res.data.message;
             }
 
             self.login = function () {
                 userService.login(self.username, self.password)
-                    .then(handleRequest, handleRequest)
-            }
-
-            self.register = function () {
-                userService.register(self.username, self.password)
-                    .then(handleRequest, handleRequest)
-            }
-
-            self.getQuote = function () {
-                userService.getQuote ()
-                    .then(handleRequest, handleRequest)
+                    .then(self.handleLogin, self.handleLogin)
             }
 
             self.logout = function () {
-                authService.logout && authService.logout()
+                authService.logout()
             }
 
             self.isAuthed = function() {
-                return authService.isAuthed ? authService.isAuthed() : false
+                return authService.isAuthed()
             }
 
             self.getUsername = function() {

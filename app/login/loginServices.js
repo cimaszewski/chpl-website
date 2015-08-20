@@ -5,21 +5,19 @@
         .service('userService', function ($http, API) {
             var self = this;
 
-            self.getQuote = function () {
-                return $http.get(API + '/auth/quote');
-            }
-
-            self.register = function (username, password) {
-                return $http.post(API + '/auth/register', {
-                    username: username,
-                    password: password
-                });
+            self.getUsers = function () {
+                return $http.get(API + '/auth/list_users');
             }
 
             self.login = function (username, password) {
-                return $http.post(API + '/auth/login', {
-                    username: username,
-                    password: password
+                return $http({
+                    method: 'POST',
+                    url: API + '/auth/authenticate',
+//                    transformResponse: undefined,
+                    data: {
+                        userName: username,
+                        password: password
+                    }
                 });
             }
         })
@@ -49,12 +47,34 @@
                 }
             }
 
+            self.isChplAdmin = function () {
+                var token = self.getToken();
+                if (token) {
+                    var authorities = self.parseJwt(token).Authorities;
+                    return authorities.indexOf('ROLE_ADMIN') > -1
+                } else {
+                    return false;
+                }
+            }
+
+            self.isAcbAdmin = function () {
+                var token = self.getToken();
+                if (token) {
+                    var authorities = self.parseJwt(token).Authorities;
+                    return authorities.indexOf('ROLE_ACB_ADMIN') > -1
+                } else {
+                    return false;
+                }
+            }
+
             self.getUsername = function () {
                 if (self.isAuthed()) {
                     var token = self.getToken();
-                    return self.parseJwt(token).username;
+                    var identity = self.parseJwt(token).Identity;
+                    return identity[2] + " " + identity[3];
                 } else {
-                    return 'User';
+                    self.logout();
+                    return 'Anonymous User';
                 }
             }
 

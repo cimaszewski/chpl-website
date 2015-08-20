@@ -1,9 +1,9 @@
 module.exports = function(config){
     config.set({
 
-        basePath : './',
+        basePath: './',
 
-        files : [
+        files: [
             'app/bower_components/angular/angular.js',
             'app/bower_components/angular-route/angular-route.js',
             'app/bower_components/angular-animate/angular-animate.min.js',
@@ -21,7 +21,11 @@ module.exports = function(config){
             'app/app_test.js',
             'app/appDev.js',
             'app/**/*Module.js',
+            'app/api/**/*.js',
             'app/common/**/*.js',
+            'app/common/components/*.html',
+            'app/admin/**/*.js',
+            'app/admin/components/*.html',
             'app/compare/**/*.js',
             'app/login/**/*.js',
             'app/nav/**/*.js',
@@ -30,32 +34,38 @@ module.exports = function(config){
         ],
 
         preprocessors: {
+            'app/api/**/!(*test).js': ['coverage'],
             'app/common/**/!(*test).js': ['coverage'],
             'app/compare/**/!(*test).js': ['coverage'],
             'app/login/**/!(*test).js': ['coverage'],
             'app/nav/**/!(*test).js': ['coverage'],
+            'app/admin/**/!(*test).js': ['coverage'],
             'app/product/**/!(*test).js': ['coverage'],
             'app/search/**/!(*test).js': ['coverage'],
-            'app/app.js': ['coverage']
+            'app/app.js': ['coverage'],
+            'app/common/components/*.html': 'ng-html2js',
+            'app/admin/components/*.html': 'ng-html2js'
         },
 
-        autoWatch : true,
+        autoWatch: true,
 
         frameworks: ['jasmine'],
 
-        browsers : ['PhantomJS'],
+        browsers: ['PhantomJS'],
 
-        plugins : [
+        plugins: [
             'karma-jasmine',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-phantomjs-launcher',
             'karma-junit-reporter',
             'karma-growl-reporter',
-            'karma-coverage'
+            'karma-coverage',
+            'karma-ng-html2js-preprocessor',
+            'karma-htmlfile-reporter'
         ],
 
-        reporters : ['dots', 'junit', 'progress', 'coverage', 'growl'],
+        reporters: ['dots', 'junit', 'coverage', 'growl', 'html'],
 
         coverageReporter: {
             type: 'lcov',
@@ -64,7 +74,11 @@ module.exports = function(config){
             file: 'coverage.lcov'
         },
 
-        junitReporter : {
+        htmlReporter: {
+            outputFile: 'test_reports/units.html'
+        },
+
+        junitReporter: {
             outputDir: 'test_reports',
             suite: 'unit'
         }
